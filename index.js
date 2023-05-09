@@ -22,7 +22,7 @@ app.use(cors(
 ))
 //is email in use
 //register
-app.post("/register", 
+app.post("/api/v1/register", 
     validateUserEmail,
     validateUserPassword,
     encryptPassword,
@@ -39,21 +39,21 @@ app.post("/register",
             const user = await userModel.create({mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle})
             res.status(200).json(user._id)
         }else{
-            res.status(502).json({message:"email already in use"})
+            res.status(400).json({message:"email already in use"})
         }
         //checks if mail is already in use
     } catch (err) {
-        res.status(501).json({message:err.message})
+        res.status(400).json({message:err.message})
     }
 })
 
-app.post("/login" ,
+app.post("/api/v1/login" ,
     encryptPassword,
     async (req,res) => {
     try {
         const {mail,password} = req.body
         const user = await userModel.findOne({mail,password})
-        if(user === null) res.status(401).json({message:"User not found"})
+        if(user === null) res.status(400).json({message:"User not found"})
         else{
             res.status(200).json(user._id)
         }
@@ -63,7 +63,7 @@ app.post("/login" ,
 })
 
 //new post
-app.post("/new-post/:id", async (req, res) => {
+app.post("/api/v1/new-post", async (req, res) => {
     try {
 
       const userId = req.params.id;
@@ -77,13 +77,13 @@ app.post("/new-post/:id", async (req, res) => {
       
       // Check if user was found and updated
       if (!updatedUser) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(400).json({ error: "User not found" });
       }
   
-      res.status(201).json({ user: updatedUser });
+      res.status(200).json({ user: updatedUser });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: "Failed to create new post" });
+      res.status(400).json({ error: "Failed to create new post" });
     }
   });
 
