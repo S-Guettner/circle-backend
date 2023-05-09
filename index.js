@@ -47,6 +47,21 @@ app.post("/register",
     }
 })
 
+app.post("/login" ,
+    encryptPassword,
+    async (req,res) => {
+    try {
+        const {mail,password} = req.body
+        const user = await userModel.findOne({mail,password})
+        if(user === null) res.status(401).json({message:"User not found"})
+        else{
+            res.status(200).json(user._id)
+        }
+    } catch (err) {
+        
+    }
+})
+
 //new post
 app.post("/new-post/:id", async (req, res) => {
     try {
