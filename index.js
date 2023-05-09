@@ -3,6 +3,8 @@ import mongoose from 'mongoose'
 import userModel from './schemas/userModel.js'
 import cors from 'cors'
 import './util/config.js'
+import {encryptPassword,validateUserEmail,validateUserPassword} from './middleware/authMiddleware.js'
+import { validationResult } from 'express-validator'
 
 const PORT = process.env.PORT || 9999
 const DB_CONNECTION = process.env.DB_CONNECTION
@@ -18,13 +20,28 @@ app.use(cors(
         credentials:true
     }
 ))
-
+//is email in use
 //register
-app.post("/register", async (req,res) => {
+app.post("/register", 
+    validateUserEmail,
+    validateUserPassword,
+    encryptPassword,
+    async (req,res) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({ errors: errors.array()})
+        }
     try {
         const {mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle} = req.body
-        const user = await userModel.create({mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle})
-        res.json(user).end()
+        //checks if mail is already in use
+        const uniqueMailCheck = await userModel.findOne({mail})
+        if(uniqueMailCheck === null){
+            const user = await userModel.create({mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle})
+            res.status(200).json(user)
+        }else{
+            res.status(502).json({message:"email already in use"})
+        }
+        //checks if mail is already in use
     } catch (err) {
         res.status(501).json({message:err.message})
     }
@@ -33,7 +50,7 @@ app.post("/register", async (req,res) => {
 //new post
 app.post("/new-post/:id", async (req, res) => {
     try {
-        
+
       const userId = req.params.id;
       const { profileImage, userName, jobTitle, postImage, likes } = req.body;
       const post = { profileImage, userName, jobTitle, postImage, likes };
