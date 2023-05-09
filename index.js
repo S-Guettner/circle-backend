@@ -77,13 +77,13 @@ app.post("/api/v1/new-post", async (req, res) => {
       
       // Check if user was found and updated
       if (!updatedUser) {
-        return res.status(400).json({ error: "User not found" });
+        return res.status(400).json({ message: "User not found" });
       }
   
       res.status(200).json({ user: updatedUser });
     } catch (err) {
       console.error(err);
-      res.status(400).json({ error: "Failed to create new post" });
+      res.status(400).json({ message: "Failed to create new post" });
     }
   });
 
