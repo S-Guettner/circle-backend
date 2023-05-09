@@ -5,6 +5,7 @@ import cors from 'cors'
 import './config.js'
 import {encryptPassword,validateUserEmail,validateUserPassword} from './authMiddleware.js'
 import { validationResult } from 'express-validator'
+import {validateRegisterData} from './validationMiddleware.js'
 
 const PORT = process.env.PORT || 9999
 const DB_CONNECTION = process.env.DB_CONNECTION
@@ -23,14 +24,10 @@ app.use(cors(
 //is email in use
 //register
 app.post("/api/v1/register", 
-    validateUserEmail,
-    validateUserPassword,
+    validateRegisterData,
     encryptPassword,
     async (req,res) => {
-        const errors = validationResult(req)
-        if(!errors.isEmpty()){
-            return res.status(400).json({ errors: errors.array()})
-        }
+
     try {
         const {mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle} = req.body
         //checks if mail is already in use
