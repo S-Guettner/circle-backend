@@ -3,8 +3,7 @@ import mongoose from 'mongoose'
 import userModel from './userModel.js'
 import cors from 'cors'
 import './config.js'
-import {encryptPassword,validateUserEmail,validateUserPassword} from './authMiddleware.js'
-import { validationResult } from 'express-validator'
+import {encryptPassword} from './authMiddleware.js'
 import {validateRegisterData} from './validationMiddleware.js'
 
 const PORT = process.env.PORT || 9999
@@ -27,6 +26,7 @@ app.post("/api/v1/register",
     validateRegisterData,
     encryptPassword,
     async (req,res) => {
+        res.status(200).json({message:req.body})
     try {
         const {mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle} = req.body
         //checks if mail is already in use
