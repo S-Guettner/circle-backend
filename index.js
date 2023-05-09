@@ -1,9 +1,9 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import userModel from './schemas/userModel.js'
+import userModel from './userModel.js'
 import cors from 'cors'
-import './util/config.js'
-import {encryptPassword,validateUserEmail,validateUserPassword} from './middleware/authMiddleware.js'
+import './config.js'
+import {encryptPassword,validateUserEmail,validateUserPassword} from './authMiddleware.js'
 import { validationResult } from 'express-validator'
 
 const PORT = process.env.PORT || 9999
