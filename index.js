@@ -27,7 +27,6 @@ app.post("/api/v1/register",
     validateRegisterData,
     encryptPassword,
     async (req,res) => {
-        res.status(200).json({message: req.body})
     try {
         const {mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle} = req.body
         //checks if mail is already in use
