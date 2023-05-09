@@ -39,11 +39,11 @@ app.post("/api/v1/register",
             const user = await userModel.create({mail,password,userName,firstName,lastName,birthDate,telephoneNumber,gender,profileDescription,profileWebsite,profileImage,jobTitle})
             res.status(200).json(user._id)
         }else{
-            res.status(400).json({message:"email already in use"})
+            res.status(502).json({message:"email already in use"})
         }
         //checks if mail is already in use
     } catch (err) {
-        res.status(400).json({message:err.message})
+        res.status(501).json({message:err.message})
     }
 })
 
@@ -53,7 +53,7 @@ app.post("/api/v1/login" ,
     try {
         const {mail,password} = req.body
         const user = await userModel.findOne({mail,password})
-        if(user === null) res.status(400).json({message:"User not found"})
+        if(user === null) res.status(401).json({message:"User not found"})
         else{
             res.status(200).json(user._id)
         }
