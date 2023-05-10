@@ -30,7 +30,8 @@ const postSchema = mongoose.Schema({
     timestamps: {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    currentTime: () => (Math.floor(Date.now() / 1000)).toString()
+    currentTime: () => Math.floor(Date.now() / 1000),
+    type: Number
 }
 }
 )
