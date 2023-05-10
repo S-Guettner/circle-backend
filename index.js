@@ -46,11 +46,11 @@ app.post("/api/v1/login" ,
     encryptPassword,
     async (req,res) => {
     try {
-        const {mail,password} = req.body
-        const user = await userModel.findOne({mail,password})
+        
+        const user = await userModel.findOne(req.body.mail,req.body.password)
         if(user === null) res.status(401).json({message:"User not found"})
         else{
-            res.status(200).json(user._id)
+            res.status(200).json(req.body)
         }
     } catch (err) {
         res.status(500).json({message:err.message})
