@@ -26,7 +26,14 @@ const postSchema = mongoose.Schema({
     userId:String,
     comments:[commentSchema]
     
-})
+},{
+    timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    currentTime: () => Math.floor(Date.now() / 1000)
+}
+}
+)
 
 const userSchema = mongoose.Schema({
     mail:String,
