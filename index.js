@@ -46,13 +46,18 @@ app.post("/api/v1/login" ,
     encryptPassword,
     async (req,res) => {
     try {
-        
-        const user = await userModel.findOne({mail:req.body.mail , password:req.body.password})
+        console.log(req.body)
+        const {mail} = req.body
+        const user = await userModel.findOne({mail})
         if(user === null){
             res.status(401).json({message:"User not found"})
         }
         else{
-            res.status(200).json(req.body)
+            if(user.password === req.body.password){
+                res.status(200).json(req.body)
+            }else{
+                res.status(400).json({message:"Wrong password"})
+            }
         }
     } catch (err) {
         res.status(500).json({message:err.message})

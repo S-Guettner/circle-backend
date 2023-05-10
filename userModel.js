@@ -54,15 +54,6 @@ const userSchema = mongoose.Schema({
 
 
 
-
-
-
-
-
-
-
-
-
 const userData = mongoose.model('user',userSchema )
 
 export default userData
