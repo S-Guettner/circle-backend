@@ -53,7 +53,7 @@ app.post("/api/v1/login" ,
         }
         else{
             if(user.password === req.body.password){
-                res.status(200).json(req.body)
+                res.status(200).json(user._id)
             }else{
                 res.status(400).json({message:"Wrong password"})
             }
