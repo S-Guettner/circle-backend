@@ -11,6 +11,7 @@ const commentSchema = mongoose.Schema({
     profileImage:String,
     userName:String,
     jobTitle:String,
+    userId:String,
     commentText:String,
     likes:Number,
     comments:[commentUnderComment]
@@ -27,13 +28,13 @@ const postSchema = mongoose.Schema({
     comments:[commentSchema]
     
 },{
-    timestamps: {
+  timestamps: {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    currentTime: () => Math.floor(Date.now() / 1000),
-    type: Number
-}
-}
+    
+  }
+  }
+
 )
 
 const userSchema = mongoose.Schema({
