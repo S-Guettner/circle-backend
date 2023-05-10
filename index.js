@@ -48,7 +48,9 @@ app.post("/api/v1/login" ,
     try {
         
         const user = await userModel.findOne({mail:req.body.mail , password:req.body.password})
-        if(user === null) res.status(401).json({message:"User not found"})
+        if(user === null){
+            res.status(401).json({message:"User not found"})
+        }
         else{
             res.status(200).json(req.body)
         }
