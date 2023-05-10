@@ -20,8 +20,10 @@ const postSchema = mongoose.Schema({
     profileImage:String,
     userName:String,
     jobTitle:String,
+    postDescription:String,
     postImage:String,
     likes:Number,
+    userId:String,
     comments:[commentSchema]
     
 })

@@ -64,7 +64,7 @@ app.post("/api/v1/login" ,
 })
 
 //new post
-app.post("/api/v1/new-post", async (req, res) => {
+app.post("/api/v1/new-post/:id", async (req, res) => {
     try {
 
       const userId = req.params.id;
@@ -87,6 +87,20 @@ app.post("/api/v1/new-post", async (req, res) => {
       res.status(400).json({ message: "Failed to create new post" });
     }
   });
+
+
+//get posts
+app.post("/api/v1/get-feed", async (req,res) => {
+    try {
+        const { userId } = req.body;
+        const users = await userModel.find({ _id: { $ne: userId } }).populate("posts");
+        const posts = users.reduce((acc, user) => acc.concat(user.posts), []);
+        res.json(posts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 
 
