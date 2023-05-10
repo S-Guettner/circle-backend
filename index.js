@@ -46,7 +46,6 @@ app.post("/api/v1/login" ,
     encryptPassword,
     async (req,res) => {
     try {
-        console.log(req.body)
         const {mail} = req.body
         const user = await userModel.findOne({mail})
         if(user === null){
