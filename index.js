@@ -20,7 +20,7 @@ app.use(cors(
         credentials:true
     }
 ))
-//is email in use
+
 //register
 app.post("/api/v1/register", 
     validateRegisterData,
@@ -42,6 +42,7 @@ app.post("/api/v1/register",
     }
 })
 
+//login
 app.post("/api/v1/login" ,
     encryptPassword,
     async (req,res) => {
@@ -95,7 +96,8 @@ app.post("/api/v1/get-feed", async (req,res) => {
         const { userId } = req.body;
         const users = await userModel.find({ _id: { $ne: userId } }).populate("posts");
         const posts = users.reduce((acc, user) => acc.concat(user.posts), []);
-        res.json(posts);
+        console.log(posts)
+        res.status(200).json(posts);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
@@ -108,24 +110,39 @@ app.post("/api/v1/new-comment", async (req, res) => {
 
     const { userId, userName ,profileImage, jobTitle,  commentText ,postId} = req.body;
     const comment = {userId, userName ,profileImage, jobTitle,  commentText ,postId}
-    const user = await userModel.findOne({ "posts._id": postId });
+    const user = await userModel.findOne({ "posts._id": postId })
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({ message: "User not found" })
     }
-    const post = user.posts.find((p) => p._id.toString() === postId);
+    const post = user.posts.find((p) => p._id.toString() === postId)
     if (!post) {
-      return res.status(400).json({ message: "Post not found" });
+      return res.status(400).json({ message: "Post not found" })
     }
     const updateComments = await userModel.findOneAndUpdate(
       { "posts._id": postId },
       { $push: { "posts.$.comments": comment } },
       { new: true }
-    );
-    res.status(200).json({ comment: updateComments });
+    )
+    res.status(200).json({ comment: updateComments })
   } catch (err) {
-    res.status(400).json({ message: "Failed to create new post" });
+    res.status(400).json({ message: "Failed to create new comment" })
   }
-});
+})
+
+//single profile
+app.post('/api/v1/get-profile' , async (req,res) => {
+  try {
+    const {userId} = req.body
+    const singleUser = await userModel.findOne({ _id: userId });
+    if(!singleUser){
+      res.status(500).json({message:"User not Found"})
+    }else{
+      res.status(200).json(singleUser)
+    }
+  } catch (err) {
+    res.status(500).json({message:"Failed to get User data"})
+  }
+})
 
 
 
