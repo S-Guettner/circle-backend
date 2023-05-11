@@ -129,7 +129,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
   }
 })
 
-//single profile
+//user profile data
 app.post('/api/v1/get-profile' , async (req,res) => {
   try {
     const {userId} = req.body
@@ -143,6 +143,7 @@ app.post('/api/v1/get-profile' , async (req,res) => {
     res.status(500).json({message:"Failed to get User data"})
   }
 })
+
 
 
 
