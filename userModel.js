@@ -53,7 +53,7 @@ const userSchema = mongoose.Schema({
     posts:[postSchema],
 
     followerList:[follower],
-    /* followingList:[] */
+    followingList:[follower]
 })
 
 
