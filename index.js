@@ -93,7 +93,7 @@ app.post("/api/v1/new-post/:id", async (req, res) => {
 //get posts
 app.post("/api/v1/get-feed", async (req,res) => {
     try {
-        const { userId, limitValue } = req.body;
+        const { userId } = req.body;
         const users = await userModel
         .find({ _id: { $ne: userId } })
         .populate("posts");
