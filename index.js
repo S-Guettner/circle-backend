@@ -100,7 +100,6 @@ app.post("/api/v1/get-feed", async (req,res) => {
         const posts = users
         .limit(limitValue)
         .reduce((acc, user) => acc.concat(user.posts), []);
-        console.log(posts)
         res.status(200).json(posts);
     } catch (err) {
         console.error(err);
@@ -149,8 +148,26 @@ app.post('/api/v1/get-profile' , async (req,res) => {
   }
 })
 
+//following status
+app.post('/api/v1/following-status', async (req,res) => {
+  try {
+    const currentUser = await userModel.findById(userId);
 
+    if (!currentUser) {
+      throw new Error('User not found');
+    }
 
+    const allUsers = await userModel.find({ _id: { $ne: userId } }, 'fullName jobTitle smallAvatar')
+    const usersWithFollowingStatus = allUsers.map(user => {
+      const isFollowing = currentUser.followingList.includes(user._id.toString());
+      const followingStatus = isFollowing ? 'following' : 'not_following';
+      return { ...user.toObject(), followingStatus };
+    })
+    res.status(200).json(usersWithFollowingStatus)
+  } catch (err) {
+    res.status(500).json({message:err})
+  }
+})
 
 
 
