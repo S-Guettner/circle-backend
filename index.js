@@ -159,7 +159,7 @@ app.post('/api/v1/following-status', async (req,res) => {
 
     const allUsers = await userModel.find({ _id: { $ne: userId } }, 'fullName jobTitle smallAvatar')
     const usersWithFollowingStatus = allUsers.map(user => {
-      const isFollowing = currentUser.followingList.includes(user._id.toString());
+      const isFollowing = currentUser.followingList.some(followingId => followingId.equals(user._id))
       const followingStatus = isFollowing ? 'following' : 'not_following';
       return { ...user.toObject(), followingStatus };
     })
@@ -168,7 +168,7 @@ app.post('/api/v1/following-status', async (req,res) => {
     res.status(500).json({message:err})
   }
 })
-
+      
 
 
 
