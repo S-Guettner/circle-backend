@@ -93,13 +93,13 @@ app.post("/api/v1/new-post/:id", async (req, res) => {
 //get posts
 app.post("/api/v1/get-feed", async (req,res) => {
     try {
-        const { userId } = req.body;
+        const { userId, limitValue } = req.body;
         const users = await userModel
         .find({ _id: { $ne: userId } })
-        .sort({ timestamp: -1 })
-        .limit(10)
         .populate("posts");
-        const posts = users.reduce((acc, user) => acc.concat(user.posts), []);
+        const posts = users
+        .limit(limitValue)
+        .reduce((acc, user) => acc.concat(user.posts), []);
         console.log(posts)
         res.status(200).json(posts);
     } catch (err) {
