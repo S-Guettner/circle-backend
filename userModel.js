@@ -27,15 +27,14 @@ const postSchema = mongoose.Schema({
     userId:String,
     comments:[commentSchema]
     
-},{
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    
-  }
-  }
-
+}
 )
+
+const follower = mongoose.Schema({
+    followerName:String,
+    jobTitle:String,
+    avatarSmall:String
+})
 
 const userSchema = mongoose.Schema({
     mail:String,
@@ -51,12 +50,10 @@ const userSchema = mongoose.Schema({
     profileWebsite:String,
     profileImage:String,
     jobTitle:String,
-
     posts:[postSchema],
 
-    /* array of user._id */
-    followerList:[String],
-    followingList:[String]
+    followerList:[follower],
+    /* followingList:[] */
 })
 
 

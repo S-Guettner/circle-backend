@@ -69,8 +69,8 @@ app.post("/api/v1/new-post/:id", async (req, res) => {
     try {
 
       const userId = req.params.id;
-      const { profileImage, userName, jobTitle, postImage, likes } = req.body;
-      const post = { profileImage, userName, jobTitle, postImage, likes };
+      const { profileImage, userName, jobTitle, postImage, likes } = req.body
+      const post = { profileImage, userName, jobTitle, postImage, likes }
       const updatedUser = await userModel.findOneAndUpdate(
         { _id: userId },
         { $push: { posts: post } },
@@ -79,15 +79,15 @@ app.post("/api/v1/new-post/:id", async (req, res) => {
       
       // Check if user was found and updated
       if (!updatedUser) {
-        return res.status(400).json({ message: "User not found" });
+        return res.status(400).json({ message: "User not found" })
       }
   
       res.status(200).json({ user: updatedUser });
     } catch (err) {
       console.error(err);
-      res.status(400).json({ message: "Failed to create new post" });
+      res.status(400).json({ message: "Failed to create new post" })
     }
-  });
+  })
 
 
 //get posts
@@ -133,7 +133,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
 app.post('/api/v1/get-profile' , async (req,res) => {
   try {
     const {userId} = req.body
-    const singleUser = await userModel.findOne({ _id: userId });
+    const singleUser = await userModel.findOne({ _id: userId})
     if(!singleUser){
       res.status(500).json({message:"User not Found"})
     }else{
@@ -141,6 +141,7 @@ app.post('/api/v1/get-profile' , async (req,res) => {
     }
   } catch (err) {
     res.status(500).json({message:"Failed to get User data"})
+    console.log(err)
   }
 })
 
