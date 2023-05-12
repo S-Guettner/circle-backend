@@ -98,7 +98,6 @@ app.post("/api/v1/get-feed", async (req,res) => {
         .find({ _id: { $ne: userId } })
         .populate("posts");
         const posts = users
-        .limit(limitValue)
         .reduce((acc, user) => acc.concat(user.posts), []);
         res.status(200).json(posts);
     } catch (err) {
