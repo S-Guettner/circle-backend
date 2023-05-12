@@ -135,7 +135,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
 app.post('/api/v1/get-profile' , async (req,res) => {
   try {
     const {userId} = req.body
-    const singleUser = await userModel.findOne({ _id: userId})
+    const singleUser = await userModel.findOne(userId)
     if(!singleUser){
       res.status(500).json({message:"User not Found"})
     }else{
@@ -150,6 +150,7 @@ app.post('/api/v1/get-profile' , async (req,res) => {
 //following status
 app.post('/api/v1/following-status', async (req,res) => {
   try {
+    const {userId} = req.body
     const currentUser = await userModel.findById(userId);
 
     if (!currentUser) {
