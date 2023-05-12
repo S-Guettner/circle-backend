@@ -150,8 +150,8 @@ app.post('/api/v1/get-profile' , async (req,res) => {
 //following status
 app.post('/api/v1/following-status', async (req,res) => {
   try {
-    const {userId} = req.body
-    const currentUser = await userModel.findById({_id:userId});
+    /* const {userId} = req.body */
+    const currentUser = await userModel.findById({_id:"645e3976d3ae8d816b2367b4"});
 
     if (!currentUser) {
       throw new Error('User not found');
