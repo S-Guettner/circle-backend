@@ -218,7 +218,7 @@ app.post('/api/v1/add-comment', async (req, res) => {
       commentText: comment
     }
 
-    post.comments.push(newComment);
+    post.comments.unshift(newComment);
 
     await user.save();
 
