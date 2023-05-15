@@ -172,23 +172,20 @@ app.post('/api/v1/following-status', async (req,res) => {
 //get comments from specific post
 app.post('/api/v1/get-post-comments', async (req, res) => {
   try {
-    const { postId } = req.body; // Assuming the postId is sent in the request body
-
-    // Find the user with the specific postId
-    const user = await userModel.findOne({ 'posts.postId': postId });
+    const { postId } = req.body
+    const user = await userModel.findOne({ 'posts.postId': postId })
 
     if (!user) {
-      return res.status(404).json({ message: 'User or post not found.' });
+      return res.status(404).json({ message: 'Post not found.' })
     }
 
-    // Find the post with the specific postId
+    // get the specific post
     const post = user.posts.find((p) => p.postId === postId);
 
     if (!post) {
       return res.status(404).json({ message: 'Post not found.' });
     }
 
-    // Return the comments of the post
     res.json({ comments: post.comments });
   } catch (err) {
     console.error(err);
@@ -196,6 +193,41 @@ app.post('/api/v1/get-post-comments', async (req, res) => {
   }
 });
 
+//add comment to post
+app.post('/api/v1/add-comment', async (req, res) => {
+  try {
+    const { postId, comment ,commenterProfileImage,commenterUserName,commenterJobTitle,} = req.body
+    const user = await userModel.findOne({ 'posts.postId': postId });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User or post not found.' });
+    }
+
+    // get the specific post
+    const post = user.posts.find((p) => p.postId === postId);
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found.' });
+    }
+
+    // new comment
+    const newComment = {
+      profileImage: commenterProfileImage,
+      userName: commenterUserName,
+      jobTitle: commenterJobTitle,
+      commentText: comment
+    }
+
+    post.comments.push(newComment);
+
+    await user.save();
+
+    res.status(200).json(post.comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error.' });
+  }
+});
 
 
 
