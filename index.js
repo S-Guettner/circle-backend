@@ -137,7 +137,7 @@ app.post('/api/v1/get-profile' , async (req,res) => {
     const {userId} = req.body
     const singleUser = await userModel.findOne({_id:userId})
     if(!singleUser){
-      res.status(500).json({message:"User not Found"})
+      res.status(400).json({message:"User not Found"})
     }else{
       res.status(200).json(singleUser)
     }
