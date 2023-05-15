@@ -118,7 +118,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
     }
     const post = user.posts.find((p) => p._id.toString() === postId)
     if (!post) {
-      return res.status(400).json({ message: "Post not found" })
+      return res.status(401).json({ message: "Post not found" })
     }
     const updateComments = await userModel.findOneAndUpdate(
       { "posts._id": postId },
