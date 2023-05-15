@@ -18,6 +18,7 @@ const commentSchema = mongoose.Schema({
 })
 
 const postSchema = mongoose.Schema({
+    postId:String,
     profileImage:String,
     userName:String,
     jobTitle:String,

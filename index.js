@@ -168,7 +168,33 @@ app.post('/api/v1/following-status', async (req,res) => {
     res.status(500).json({message:err})
   }
 })
-      
+
+//get comments from specific post
+app.post('/api/v1/get-post-comments', async (req, res) => {
+  try {
+    const { postId } = req.body; // Assuming the postId is sent in the request body
+
+    // Find the user with the specific postId
+    const user = await userModel.findOne({ 'posts.postId': postId });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User or post not found.' });
+    }
+
+    // Find the post with the specific postId
+    const post = user.posts.find((p) => p.postId === postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found.' });
+    }
+
+    // Return the comments of the post
+    res.json({ comments: post.comments });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
 
 
 
