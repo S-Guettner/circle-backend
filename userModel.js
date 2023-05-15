@@ -14,6 +14,7 @@ const commentSchema = mongoose.Schema({
     userId:String,
     commentText:String,
     likes:Number,
+    commentIdTest:String,
     comments:[commentUnderComment]
 })
 

@@ -227,6 +227,41 @@ app.post('/api/v1/add-comment', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'Server error.' });
   }
+})
+
+//increase likes at a comment by 1
+app.post('/api/v1/increase-comment-likes', async (req, res) => {
+  try {
+    const { postId, commentId } = req.body
+    const user = await userModel.findOne({ 'posts.postId': postId });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User or post not found.' });
+    }
+
+
+    const post = user.posts.find((p) => p.postId === postId);
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found.' });
+    }
+
+    const comment = post.comments.find((c) => c.commentIdTest === commentId);
+
+    if (!comment) {
+      return res.status(404).json({ error: 'Comment not found.' });
+    }
+
+    // Increase the likes on the comment by 1
+    comment.likes += 1;
+
+    await user.save();
+
+    res.status(200).json(comment)
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error.' });
+  }
 });
 
 
