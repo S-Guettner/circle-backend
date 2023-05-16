@@ -232,10 +232,11 @@ app.post("/api/v1/new-comment", async (req, res) => {
 
     // Create comment object
     const commentObject = {
-      commentText: commentText,
-      fullName: user.fullName,
-      jobTitle: user.jobTitle,
-      profileImage: user.avatarSmall,
+      comment: commentText,
+      commentCreator: user.fullName,
+      commentCreatorJob: user.jobTitle,
+      commentCreatorAvatar: user.avatarSmall,
+      likes: 0,
       timestamp: faker.date.between({ from: '2018-01-01T00:00:00.000Z', to: '2023-01-01T00:00:00.000Z' })
     };
 
@@ -245,7 +246,9 @@ app.post("/api/v1/new-comment", async (req, res) => {
       { $push: { 'posts.$.comments': commentObject } } // Use commentObject instead of comment
     );
 
-    res.status(200).json({ comment: result });
+    const foundPost = await result.posts.find(post => post.postId === postId);
+
+    res.status(200).json(foundPost);
   } catch (err) {
     res.status(400).json({ message: "Failed to create new comment" });
   }
