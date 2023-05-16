@@ -112,16 +112,16 @@ app.post("/api/v1/new-comment", async (req, res) => {
 
     const { userId, userName ,profileImage, jobTitle,  commentText ,postId} = req.body;
     const comment = {userId, userName ,profileImage, jobTitle,  commentText ,postId}
-    const user = await userModel.findOne({ "posts._id": postId })
+    const user = await userModel.findOne({ "posts.postId": postId })
     if (!user) {
       return res.status(400).json({ message: "User not found" })
     }
-    const post = user.posts.find((p) => p._id.toString() === postId)
+    const post = user.posts.find((p) => p.postId.toString() === postId)
     if (!post) {
       return res.status(401).json({ message: "Post not found" })
     }
     const updateComments = await userModel.findOneAndUpdate(
-      { "posts._id": postId },
+      { "posts.postId": postId },
       { $push: { "posts.$.comments": comment } },
       { new: true }
     )
