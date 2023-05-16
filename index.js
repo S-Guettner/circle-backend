@@ -163,7 +163,14 @@ app.post('/api/v1/search-user', async (req, res) => {
     );
 
     const searchedUsers = users.map(user => {
-      const isFollowing = user.followingList.some(follower => follower.userId === userId);
+      let isFollowing = false;
+      const foundUser = user.followingList.find(follower => follower.userId === userId);
+      if (foundUser) {
+        isFollowing = true;
+        // You can update other properties of the foundUser here if needed
+        // For example: foundUser.fullName = 'Updated Full Name';
+      }
+
       return {
         ...user.toObject(),
         isFollowing
