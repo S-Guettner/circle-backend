@@ -194,40 +194,46 @@ app.post('/api/v1/get-post-comments', async (req, res) => {
 });
 
 //add comment to post
-app.post('/api/v1/add-comment', async (req, res) => {
+app.post("/api/v1/new-comment", async (req, res) => {
   try {
-    const { postId, comment ,commenterProfileImage,commenterUserName,commenterJobTitle,} = req.body
-    const user = await userModel.findOne({ 'posts.postId': postId });
+    const { userId, postId, commentText } = req.body;
 
+    // User suchen
+    const user = await userModel.findOne({ _id: userId });
     if (!user) {
-      return res.status(404).json({ error: 'User or post not found.' });
+      return res.status(400).json({ message: "User not found" });
     }
 
-    // get the specific post
-    const post = user.posts.find((p) => p.postId === postId);
+    // Informationen des Users abrufen
+    
 
+    // Post im User-Objekt finden
+    const post = user.posts.find((p) => p.postId.toString() === postId);
     if (!post) {
-      return res.status(404).json({ error: 'Post not found.' });
+      return res.status(401).json({ message: "Post not found" });
     }
 
-    // new comment
-    const newComment = {
-      profileImage: commenterProfileImage,
-      userName: commenterUserName,
-      jobTitle: commenterJobTitle,
-      commentText: comment
-    }
+    // Kommentar erstellen
+    const comment = {
+      userId,
+      commentCreator: user.fullName,
+      commentCreatorJob:user.jobTitle,
+      comment:commentText,
+      postId,
+    };
 
-    post.comments.unshift(newComment);
+    // Kommentar zum Post hinzufügen
+    const updateComments = await userModel.findOneAndUpdate(
+      { _id: userId, "posts.postId": postId },
+      { $push: { "posts.$.comments": comment } },
+      { new: true }
+    );
 
-    await user.save();
-
-    res.status(200).json(post.comments);
+    res.status(200).json({ comment: updateComments });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error.' });
+    res.status(400).json({ message: "Failed to create new comment" });
   }
-})
+});
 
 //increase likes at a comment by one
 app.post('/api/v1/increase-comment-likes', async (req, res) => {
