@@ -174,33 +174,29 @@ app.post("/api/v1/new-comment", async (req, res) => {
   try {
     const { userId, postId, commentText } = req.body;
 
-    try {
-      await client.connect();
-      const db = client.db(dbName);
+    // User-Dokument abrufen
+    const user = await userModel.findOne({ _id: userId });
 
-      // User-Dokument abrufen
-      const user = await db.collection('deineSammlung').findOne({ _id: userId });
+    // Kommentar-Objekt erstellen
+    const commentObject = {
+      commentText: commentText,
+      username: user.fullName,
+      jobTitle: user.jobTitle,
+      avatar: user.avatarMidsize
+    };
 
-      // Kommentar-Objekt erstellen
-      const commentObject = {
-        commentText: commentText,
-        username: user.fullName,
-        jobTitle: user.jobTitle,
-        avatar: user.avatarMidsize
-      };
+    // Post-Dokument aktualisieren
+    const result = await db.collection('deineSammlung').findOneAndUpdate(
+      { _id: postId },
+      { $push: { 'posts.$[p].comments': commentObject } },
+      { arrayFilters: [{ 'p._id': postId }] }
+    );
 
-      // Post-Dokument aktualisieren
-      const result = await db.collection('deineSammlung').findOneAndUpdate(
-        { _id: postId },
-        { $push: { 'posts.$[p].comments': commentObject } },
-        { arrayFilters: [{ 'p._id': postId }] }
-      );
-
-      res.status(200).json({ comment: result, user: user });
-    } catch (err) {
-      res.status(400).json({ message: "Failed to create new comment" });
-    }
-  });
+    res.status(200).json({ comment: result, user: user });
+  } catch (err) {
+    res.status(400).json({ message: "Failed to create new comment" });
+  }
+});
 
 //increase likes at a comment by one
 app.post('/api/v1/increase-comment-likes', async (req, res) => {
