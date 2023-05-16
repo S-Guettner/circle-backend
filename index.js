@@ -106,6 +106,7 @@ app.post("/api/v1/get-feed", async (req, res) => {
   }
 })
 
+
 //user profile data
 app.post('/api/v1/get-profile', async (req, res) => {
   try {
