@@ -183,7 +183,7 @@ app.post('/api/v1/search-user', async (req, res) => {
 
 //add user to followingList
 app.post('/api/v1/add-following', async (req, res) => {
-  const { userId, fullNameToAdd } = req.body;
+  const { userId, fullNameToAdd, _id } = req.body;
 
   try {
     // Find the user to follow
@@ -216,11 +216,11 @@ app.post('/api/v1/add-following', async (req, res) => {
       userToAdd.followersList = [];
     }
 
-    const {email} = userToAdd
 
     // Add the user to the followingList array
     const followingUser = {
       fullName: fullNameToAdd,
+      _id:_id
       // For example: email, username, etc.
     };
     user.followingList.push(followingUser);
