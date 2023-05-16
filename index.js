@@ -152,6 +152,24 @@ app.post('/api/v1/following-status', async (req, res) => {
   }
 })
 
+//search for user
+app.post('/api/v1/users/search', async (req, res) => {
+  const { fullName } = req.body;
+
+  try {
+    const users = await userModel.find(
+      { fullName: { $regex: fullName, $options: 'i' } },
+      'fullName jobTitle avatarSmall'
+    );
+
+    res.status(200).json({ users });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
 //add user to following list
 app.post('/api/v1/follow-user', async (req, res) => {
   try {
