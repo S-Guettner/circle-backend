@@ -161,14 +161,23 @@ app.post('/api/v1/follow-user', async (req, res) => {
     }
 
     // Check if the user is already being followed
-    /*     const isFollowing = userToFollow.followingList.some(
-          (follower) => follower.followerName === userToAdd.userName
-        );
-    
-        if (isFollowing) {
-          return res.status(400).json({ message: 'User is already being followed' });
-        }
-     */
+    const isFollowing = userToFollow.followingList.some(
+      (follower) => follower.followerName === userToAdd.userName
+    );
+
+    if (isFollowing) {
+      return res.status(400).json({ message: 'User is already being followed' });
+    }
+
+    // Check if the user to add is already in the followingList array
+    const isUserInFollowingList = userToFollow.followingList.some(
+      (follower) => follower.followerName === userToAdd.userName
+    );
+
+    if (isUserInFollowingList) {
+      return res.status(400).json({ message: 'User is already in the following list' });
+    }
+
     // Create a new follower object containing all data from the userToAdd
     const followerObject = {
       followerName: userToAdd.fullName,
