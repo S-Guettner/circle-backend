@@ -181,7 +181,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
       commentText: commentText,
       commentCreator: user.fullName,
       jobTitle: user.jobTitle,
-      commentCreatorAvatar: user.avatarMidsize,
+      commentCreatorAvatar: user.Small,
       timestamp: faker.date.between({ from: '2018-01-01T00:00:00.000Z', to: '2023-01-01T00:00:00.000Z' })
     };
 
