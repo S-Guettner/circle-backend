@@ -11,7 +11,7 @@ const commentSchema = mongoose.Schema({
     commentCreatorAvatar: String,
     commentCreator: String,
     commentCreatorJob: String,
-    _id: String,
+    commentId: String,
     comment: String,
     likes: Number,
     commentId: String,
