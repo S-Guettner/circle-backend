@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const commentUnderComment = mongoose.Schema({
     profileImage: String,
-    userName: String,
+    fullName: String,
     jobTitle: String,
     commentText: String
 })
@@ -21,7 +21,7 @@ const commentSchema = mongoose.Schema({
 const postSchema = mongoose.Schema({
     postId: String,
     profileImage: String,
-    userName: String,
+    fullName: String,
     jobTitle: String,
     postDescription: String,
     postImage: String,
@@ -51,14 +51,15 @@ const userSchema = mongoose.Schema({
     avatarSmall: String,
     jobTitle: String,
     posts: [postSchema],
-
     followerList: [follower],
     followingList: [follower]
 })
 
-
-
-
+// Add the pre middleware to set the fullName field
+userSchema.pre('save', function (next) {
+    this.fullName = `${this.firstName} ${this.lastName}`;
+    next();
+});
 
 
 
