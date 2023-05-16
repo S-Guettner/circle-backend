@@ -140,7 +140,7 @@ app.post('/api/v1/following-status', async (req, res) => {
     if (!currentUser) {
       throw new Error('User not found');
     }
-    const allUsers = await userModel.find({ _id: { $ne: userId } }, 'fullName jobTitle smallAvatar')
+    const allUsers = await userModel.find({ _id: { $ne: userId } })
     const usersWithFollowingStatus = allUsers.map(user => {
       const isFollowing = currentUser.followingList.some(followingId => followingId.equals(user._id))
       const followingStatus = isFollowing ? 'following' : 'not_following';
@@ -168,30 +168,13 @@ app.post('/api/v1/follow-user', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if the user to add already exists in the followingList array
-    const existingFollower = user.followingList.find(
-      (follower) => follower.IdOfUserToFollow === IdOfUserToFollow
-    );
+    // Update the followingList array to add the user if not already present
+    await userModel.findByIdAndUpdate(userId, { $addToSet: { followingList: userToAdd._id } });
 
-    if (existingFollower) {
-      return res.status(400).json({ message: 'User is already in the following list' });
-    } else {
-      const followerObject = {
-        IdOfUserToFollow,
-        followerName: userToAdd.fullName,
-        jobTitle: userToAdd.jobTitle,
-        avatarSmall: userToAdd.avatarSmall,
-        // Add any additional fields from the follower schema
-      };
+    // Update the followerList array of the user to follow to add the user if not already present
+    await userModel.findByIdAndUpdate(IdOfUserToFollow, { $addToSet: { followerList: userId } });
 
-      // Add the user to the following list array
-      user.followingList.push(followerObject);
-
-      // Save the updated user
-      await user.save();
-
-      return res.status(200).json({ followerObject });
-    }
+    return res.status(200).json({ message: 'User followed successfully' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: 'Internal server error' });
