@@ -164,10 +164,12 @@ app.post('/api/v1/search-user', async (req, res) => {
 
     const searchedUsers = users.map(user => {
       const isFollowing = user.followingList.some(follower => follower.fullName === fullName);
+      const userObject = user.toObject();
+      const userIds = userObject.followingList.map(follower => follower.userId);
       return {
-        ...user.toObject(),
+        ...userObject,
         isFollowing,
-        userId: userId // Include the ID of the searched user
+        userIds // Include the user IDs of the users in the followingList
       };
     });
 
