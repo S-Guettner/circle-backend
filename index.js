@@ -158,19 +158,12 @@ app.post('/api/v1/search-user', async (req, res) => {
 
   try {
     const users = await userModel.find(
-      { fullName: { $regex: fullName, $options: 'i' } },
+      { 'followingList.fullName': { $regex: fullName, $options: 'i' } },
       'fullName jobTitle avatarSmall followingList'
     );
 
     const searchedUsers = users.map(user => {
-      let isFollowing = false;
-      const foundUser = user.followingList.find(follower => follower.userId === userId);
-      if (foundUser) {
-        isFollowing = true;
-        // You can update other properties of the foundUser here if needed
-        // For example: foundUser.fullName = 'Updated Full Name';
-      }
-
+      const isFollowing = user.followingList.some(follower => follower.fullName === fullName);
       return {
         ...user.toObject(),
         isFollowing
