@@ -161,14 +161,14 @@ app.post('/api/v1/follow-user', async (req, res) => {
     }
 
     // Check if the user is already being followed
-/*     const isFollowing = userToFollow.followingList.some(
-      (follower) => follower.followerName === userToAdd.userName
-    );
-
-    if (isFollowing) {
-      return res.status(400).json({ message: 'User is already being followed' });
-    }
- */
+    /*     const isFollowing = userToFollow.followingList.some(
+          (follower) => follower.followerName === userToAdd.userName
+        );
+    
+        if (isFollowing) {
+          return res.status(400).json({ message: 'User is already being followed' });
+        }
+     */
     // Create a new follower object containing all data from the userToAdd
     const followerObject = {
       followerName: userToAdd.fullName,
@@ -183,7 +183,7 @@ app.post('/api/v1/follow-user', async (req, res) => {
     // Save the updated user
     await userToFollow.save();
 
-    return res.status(200).json({followerObject});
+    return res.status(200).json({ followerObject });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: 'Internal server error' });
@@ -226,7 +226,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
       commentText: commentText,
       fullName: user.fullName,
       jobTitle: user.jobTitle,
-      commentCreatorAvatar: user.avatarSmall,
+      profileImage: user.avatarSmall,
       timestamp: faker.date.between({ from: '2018-01-01T00:00:00.000Z', to: '2023-01-01T00:00:00.000Z' })
     };
 
