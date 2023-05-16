@@ -140,7 +140,7 @@ app.post('/api/v1/following-status', async (req, res) => {
     if (!currentUser) {
       throw new Error('User not found');
     }
-    const allUsers = await userModel.find({ _id: { $ne: userId } })
+    const allUsers = await userModel.find({ _id: { $ne: userId } }, 'fullName jobTitle smallAvatar')
     const usersWithFollowingStatus = allUsers.map(user => {
       const isFollowing = currentUser.followingList.some(followingId => followingId.equals(user._id))
       const followingStatus = isFollowing ? 'following' : 'not_following';
