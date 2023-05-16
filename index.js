@@ -212,10 +212,12 @@ app.post('/api/v1/add-following', async (req, res) => {
       userToAdd.followersList = [];
     }
 
+    const {email} = userToAdd
+
     // Add the user to the followingList array
     const followingUser = {
       fullName: fullNameToAdd,
-      // Include other user data here
+      email
       // For example: email, username, etc.
     };
     user.followingList.push(followingUser);
