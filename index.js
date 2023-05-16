@@ -170,7 +170,7 @@ app.post('/api/v1/search-user', async (req, res) => {
       };
     });
 
-    res.status(200).json({ searchedUsers });
+    res.status(200).json(searchedUsers);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal Server Error' });
