@@ -8,13 +8,13 @@ const commentUnderComment = mongoose.Schema({
 })
 
 const commentSchema = mongoose.Schema({
-    profileImage: String,
-    fullName: String,
-    jobTitle: String,
-    userId: String,
-    commentText: String,
+    commentCreatorAvatar: String,
+    commentCreator: String,
+    commentCreatorJob: String,
+    _id: String,
+    comment: String,
     likes: Number,
-    commentIdTest: String,
+    commentId: String,
     comments: [commentUnderComment]
 })
 

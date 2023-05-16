@@ -223,10 +223,10 @@ app.post("/api/v1/new-comment", async (req, res) => {
 
     // Create comment object
     const commentObject = {
-      commentText: commentText,
-      fullName: user.fullName,
-      jobTitle: user.jobTitle,
-      profileImage: user.avatarSmall,
+      comment: commentText,
+      commentCreator: user.fullName,
+      commentCreatorJob: user.jobTitle,
+      commentCreatorAvatar: user.avatarSmall,
       timestamp: faker.date.between({ from: '2018-01-01T00:00:00.000Z', to: '2023-01-01T00:00:00.000Z' })
     };
 
