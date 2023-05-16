@@ -189,10 +189,10 @@ app.post("/api/v1/new-comment", async (req, res) => {
     const result = await userModel.findOneAndUpdate(
       { _id: postId },
       { $push: { 'posts.$[p].comments': commentObject } },
-      { arrayFilters: [{ 'p._id': postId }] }
+      { arrayFilters: [{ 'postId': postId }] }
     );
 
-    res.status(200).json({ comment: result, user: user });
+    res.status(200).json({ comment: result });
   } catch (err) {
     res.status(400).json({ message: "Failed to create new comment" });
   }
