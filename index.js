@@ -98,14 +98,21 @@ app.post("/api/v1/get-feed", async (req, res) => {
     const users = await userModel
       .find({ _id: { $ne: userId } })
       .populate("posts");
-    const posts = users
-      .reduce((acc, user) => acc.concat(user.posts), []);
-    res.status(200).json(posts);
+    let posts = users.reduce((acc, user) => acc.concat(user.posts), []);
+
+    // Sort posts by timestamp in descending order
+    const sortedPosts = posts.sort((a, b) => {
+      const timestampA = new Date(a.timestamp);
+      const timestampB = new Date(b.timestamp);
+      return timestampB - timestampA;
+    })
+
+    res.status(200).json(sortedPosts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });
   }
-})
+});
 
 
 //user profile data
@@ -229,6 +236,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
       commentCreatorJob: user.jobTitle,
       commentCreatorAvatar: user.avatarSmall,
       likes: 0,
+      commentId: faker.database.mongodbObjectId(),
       timestamp: faker.date.between({ from: '2018-01-01T00:00:00.000Z', to: '2023-01-01T00:00:00.000Z' })
     };
 
