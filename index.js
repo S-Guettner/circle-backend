@@ -126,13 +126,12 @@ app.post('/api/v1/get-profile', async (req, res) => {
 //following status
 app.post('/api/v1/following-status', async (req, res) => {
   try {
-    const userId = "645e3976d3ae8d816b2367b4"
+    const { userId } = req.body
     const currentUser = await userModel.findById({ _id: userId });
 
     if (!currentUser) {
       throw new Error('User not found');
     }
-
     const allUsers = await userModel.find({ _id: { $ne: userId } }, 'fullName jobTitle smallAvatar')
     const usersWithFollowingStatus = allUsers.map(user => {
       const isFollowing = currentUser.followingList.some(followingId => followingId.equals(user._id))
@@ -176,6 +175,7 @@ app.post("/api/v1/new-comment", async (req, res) => {
 
     // User-Dokument abrufen
     const user = await userModel.findOne({ _id: userId });
+    const post = await userModel.findOne({ 'posts.postId': postId })
 
     // Kommentar-Objekt erstellen
     const commentObject = {
