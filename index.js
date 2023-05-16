@@ -151,55 +151,170 @@ app.post('/api/v1/following-status', async (req, res) => {
     res.status(500).json({ message: err })
   }
 })
+
+//search for user
+app.post('/api/v1/search-user', async (req, res) => {
+  const { fullName, userId } = req.body;
+
+  try {
+    const users = await userModel.find(
+      { 'followingList.fullName': { $regex: fullName, $options: 'i' } },
+      'fullName jobTitle avatarSmall followingList'
+    );
+
+    const searchedUsers = users.map(user => {
+      const isFollowing = user.followingList.some(follower => follower.fullName === fullName);
+      const userObject = user.toObject();
+      const userIds = userObject.followingList.map(follower => follower.userId);
+      return {
+        ...userObject,
+        isFollowing,
+        userIds // Include the user IDs of the users in the followingList
+      };
+    });
+
+    res.status(200).json(searchedUsers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+//add user to followingList
+app.post('/api/v1/add-following', async (req, res) => {
+  const { userId, fullNameToAdd, _id } = req.body;
+
+  try {
+    // Find the user to follow
+    const userToAdd = await userModel.findOne({ fullName: fullNameToAdd });
+    if (!userToAdd) {
+      return res.status(404).json({ message: 'User to follow not found' });
+    }
+
+    // Find the user who is adding the following
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user to add is already in the followingList
+    const isAlreadyFollowing = user.followingList.some(
+      (follower) => follower.fullName === fullNameToAdd
+    );
+
+    // If the user is already in the followingList, return a message
+    if (isAlreadyFollowing) {
+      return res.status(400).json({ message: 'User is already being followed' });
+    }
+
+    // Initialize followingList and followersList properties if not defined
+    if (!Array.isArray(user.followingList)) {
+      user.followingList = [];
+    }
+    if (!Array.isArray(userToAdd.followersList)) {
+      userToAdd.followersList = [];
+    }
+
+
+    // Add the user to the followingList array
+    const followingUser = {
+      fullName: fullNameToAdd,
+      _id:_id
+      // For example: email, username, etc.
+    };
+    user.followingList.push(followingUser);
+
+  
+    const followerUser = {
+      fullName: user.fullName,
+      // Include other user data here
+      // For example: email, username, etc.
+    };
+    userToAdd.followersList.push(followerUser);
+
+    // Save the updated user and userToAdd objects
+    await Promise.all([user.save(), userToAdd.save()]);
+
+    res.status(200).json({ message: 'User added to following list and followers list', followingUser });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+//remove user from followinglist
+app.post('/api/v1/remove-following', async (req, res) => {
+  const { userId, fullNameToRemove } = req.body;
+
+  try {
+    // Find the user to remove from followingList
+    const userToRemove = await userModel.findOne({ fullName: fullNameToRemove });
+    if (!userToRemove) {
+      return res.status(404).json({ message: 'User to remove not found' });
+    }
+
+    // Find the user who is removing the following
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user to remove is found in the followingList
+    const indexToRemove = user.followingList.findIndex(
+      (follower) => follower.fullName === fullNameToRemove
+    );
+    if (indexToRemove === -1) {
+      return res.status(404).json({ message: 'User not found in following list' });
+    }
+
+    // Remove the user from the followingList array
+    user.followingList.splice(indexToRemove, 1);
+
+    // Find the index of the user in the followersList array of the user to remove
+    const indexToRemoveFromFollowers = userToRemove.followersList.findIndex(
+      (follower) => follower.fullName === user.fullName
+    );
+    if (indexToRemoveFromFollowers !== -1) {
+      // Remove the user from the followersList array of the user to remove
+      userToRemove.followersList.splice(indexToRemoveFromFollowers, 1);
+    }
+
+    // Save the updated user and userToRemove objects
+    await Promise.all([user.save(), userToRemove.save()]);
+
+    res.status(200).json({ message: 'User removed from following list and followers list' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 //add user to following list
 app.post('/api/v1/follow-user', async (req, res) => {
   try {
     const { userId, IdOfUserToFollow } = req.body;
 
     // Find the user with userId
-    const userToFollow = await userModel.findById(userId);
+    const user = await userModel.findById(userId);
 
     // Find the user to be followed by IdOfUserToFollow
     const userToAdd = await userModel.findById(IdOfUserToFollow);
 
     // Check if the user to follow and the user to add exist
-    if (!userToFollow || !userToAdd) {
+    if (!user || !userToAdd) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if the user is already being followed
-    const isFollowing = userToFollow.followingList.some(
-      (follower) => follower.followerName === userToAdd.userName
-    );
+    // Update the followingList array to add the user if not already present
+    await userModel.findByIdAndUpdate(userId, { $addToSet: { followingList: userToAdd._id } });
 
-    if (isFollowing) {
-      return res.status(400).json({ message: 'User is already being followed' });
-    }
+    // Update the followerList array of the user to follow to add the user if not already present
+    await userModel.findByIdAndUpdate(IdOfUserToFollow, { $addToSet: { followerList: userId } });
 
-    // Check if the user to add is already in the followingList array
-    const isUserInFollowingList = userToFollow.followingList.some(
-      (follower) => follower.followerName === userToAdd.userName
-    );
-
-    if (isUserInFollowingList) {
-      return res.status(400).json({ message: 'User is already in the following list' });
-    }
-
-    // Create a new follower object containing all data from the userToAdd
-    const followerObject = {
-      followerName: userToAdd.fullName,
-      jobTitle: userToAdd.jobTitle,
-      avatarSmall: userToAdd.avatarSmall,
-      // Add any additional fields from the follower schema
-    };
-
-    // Add the user to the following list array
-    userToFollow.followingList.push(followerObject);
-
-    // Save the updated user
-    await userToFollow.save();
-
-    return res.status(200).json({ followerObject });
+    return res.status(200).json({ message: 'User followed successfully' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: 'Internal server error' });
