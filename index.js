@@ -168,16 +168,14 @@ app.post('/api/v1/get-post-comments', async (req, res) => {
   }
 });
 
-//add comment to post
 app.post("/api/v1/new-comment", async (req, res) => {
   try {
     const { userId, postId, commentText } = req.body;
 
-    // User-Dokument abrufen
+    // Retrieve user document
     const user = await userModel.findOne({ _id: userId });
-    const post = await userModel.findOne({ 'posts.postId': postId })
 
-    // Kommentar-Objekt erstellen
+    // Create comment object
     const commentObject = {
       commentText: commentText,
       username: user.fullName,
@@ -185,10 +183,10 @@ app.post("/api/v1/new-comment", async (req, res) => {
       avatar: user.avatarMidsize
     };
 
-    // Post-Dokument aktualisieren
+    // Update the post document
     const result = await userModel.findOneAndUpdate(
       { 'posts.postId': postId },
-      { $push: { 'posts.$.comments': comment } }
+      { $push: { 'posts.$.comments': commentObject } }
     );
 
     res.status(200).json({ comment: result });
