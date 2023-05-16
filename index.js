@@ -236,7 +236,9 @@ app.post("/api/v1/new-comment", async (req, res) => {
       { $push: { 'posts.$.comments': commentObject } } // Use commentObject instead of comment
     );
 
-    res.status(200).json({ comment: result });
+    const foundPost = await result.posts.comments.find(post => post.postId === postId);
+
+    res.status(200).json(foundPost);
   } catch (err) {
     res.status(400).json({ message: "Failed to create new comment" });
   }
