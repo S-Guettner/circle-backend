@@ -177,6 +177,96 @@ app.post('/api/v1/search-user', async (req, res) => {
   }
 });
 
+//add user to followingList
+app.post('/api/v1/add-following', async (req, res) => {
+  const { userId, fullNameToAdd } = req.body;
+
+  try {
+    // Find the user to follow
+    const userToAdd = await userModel.findOne({ fullName: fullNameToAdd });
+    if (!userToAdd) {
+      return res.status(404).json({ message: 'User to follow not found' });
+    }
+
+    // Find the user who is adding the following
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user to add is already in the followingList
+    const isAlreadyFollowing = user.followingList.some(
+      (follower) => follower.fullName === fullNameToAdd
+    );
+
+    // If the user is already in the followingList, return a message
+    if (isAlreadyFollowing) {
+      return res.status(400).json({ message: 'User is already being followed' });
+    }
+
+    // Add the user to the followingList array
+    user.followingList.push({ fullName: fullNameToAdd });
+
+    // Add the user to the followersList array of the user to follow
+    userToAdd.followersList.push({ fullName: user.fullName });
+
+    // Save the updated user and userToAdd objects
+    await Promise.all([user.save(), userToAdd.save()]);
+
+    res.status(200).json({ message: 'User added to following list and followers list' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+//remove user from followinglist
+app.post('/api/v1/remove-following', async (req, res) => {
+  const { userId, fullNameToRemove } = req.body;
+
+  try {
+    // Find the user to remove from followingList
+    const userToRemove = await userModel.findOne({ fullName: fullNameToRemove });
+    if (!userToRemove) {
+      return res.status(404).json({ message: 'User to remove not found' });
+    }
+
+    // Find the user who is removing the following
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user to remove is found in the followingList
+    const indexToRemove = user.followingList.findIndex(
+      (follower) => follower.fullName === fullNameToRemove
+    );
+    if (indexToRemove === -1) {
+      return res.status(404).json({ message: 'User not found in following list' });
+    }
+
+    // Remove the user from the followingList array
+    user.followingList.splice(indexToRemove, 1);
+
+    // Find the index of the user in the followersList array of the user to remove
+    const indexToRemoveFromFollowers = userToRemove.followersList.findIndex(
+      (follower) => follower.fullName === user.fullName
+    );
+    if (indexToRemoveFromFollowers !== -1) {
+      // Remove the user from the followersList array of the user to remove
+      userToRemove.followersList.splice(indexToRemoveFromFollowers, 1);
+    }
+
+    // Save the updated user and userToRemove objects
+    await Promise.all([user.save(), userToRemove.save()]);
+
+    res.status(200).json({ message: 'User removed from following list and followers list' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 
 //add user to following list
