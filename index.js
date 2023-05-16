@@ -173,8 +173,8 @@ app.post("/api/v1/new-comment", async (req, res) => {
   try {
     const { userId, postId, commentText } = req.body;
 
-    // User suchen
-    const user = await userModel.findOne({ _id: userId });
+    const user = await userModel.findById(userId);
+
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
