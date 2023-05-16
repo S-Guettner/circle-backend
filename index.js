@@ -98,14 +98,17 @@ app.post("/api/v1/get-feed", async (req, res) => {
     const users = await userModel
       .find({ _id: { $ne: userId } })
       .populate("posts");
-    const posts = users
-      .reduce((acc, user) => acc.concat(user.posts), []);
+    let posts = users.reduce((acc, user) => acc.concat(user.posts), []);
+
+    // Sort posts by timestamp in descending order
+    posts.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+
     res.status(200).json(posts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });
   }
-})
+});
 
 
 //user profile data
