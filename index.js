@@ -174,42 +174,33 @@ app.post("/api/v1/new-comment", async (req, res) => {
   try {
     const { userId, postId, commentText } = req.body;
 
-    const user = await userModel.findById(userId);
+    try {
+      await client.connect();
+      const db = client.db(dbName);
 
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      // User-Dokument abrufen
+      const user = await db.collection('deineSammlung').findOne({ _id: userId });
+
+      // Kommentar-Objekt erstellen
+      const commentObject = {
+        commentText: commentText,
+        username: user.fullName,
+        jobTitle: user.jobTitle,
+        avatar: user.avatarMidsize
+      };
+
+      // Post-Dokument aktualisieren
+      const result = await db.collection('deineSammlung').findOneAndUpdate(
+        { _id: postId },
+        { $push: { 'posts.$[p].comments': commentObject } },
+        { arrayFilters: [{ 'p._id': postId }] }
+      );
+
+      res.status(200).json({ comment: result, user: user });
+    } catch (err) {
+      res.status(400).json({ message: "Failed to create new comment" });
     }
-
-    // Informationen des Users abrufen
-
-
-    // Post im User-Objekt finden
-    const post = user.posts.find((p) => p.postId.toString() === postId);
-    if (!post) {
-      return res.status(401).json({ message: "Post not found" });
-    }
-
-    // Kommentar erstellen
-    const comment = {
-      userId,
-      commentCreator: user.fullName,
-      commentCreatorJob: user.jobTitle,
-      comment: commentText,
-      postId,
-    };
-
-    // Kommentar zum Post hinzufügen
-    const updateComments = await userModel.findOneAndUpdate(
-      { _id: userId, "posts.postId": postId },
-      { $push: { "posts.$.comments": comment } },
-      { new: true }
-    );
-
-    res.status(200).json({ comment: updateComments });
-  } catch (err) {
-    res.status(400).json({ message: "Failed to create new comment" });
-  }
-});
+  });
 
 //increase likes at a comment by one
 app.post('/api/v1/increase-comment-likes', async (req, res) => {
