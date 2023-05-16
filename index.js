@@ -204,6 +204,14 @@ app.post('/api/v1/add-following', async (req, res) => {
       return res.status(400).json({ message: 'User is already being followed' });
     }
 
+    // Initialize followingList and followersList properties if not defined
+    if (!Array.isArray(user.followingList)) {
+      user.followingList = [];
+    }
+    if (!Array.isArray(userToAdd.followersList)) {
+      userToAdd.followersList = [];
+    }
+
     // Add the user to the followingList array
     user.followingList.push({ fullName: fullNameToAdd });
 
