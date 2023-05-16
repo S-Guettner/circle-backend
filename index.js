@@ -216,7 +216,7 @@ app.post('/api/v1/add-following', async (req, res) => {
 
     // Add the user to the followingList array
     const followingUser = {
-      fullName: fullNameToAdd,
+      followerName: fullNameToAdd,
       email
       // For example: email, username, etc.
     };
@@ -233,7 +233,7 @@ app.post('/api/v1/add-following', async (req, res) => {
     // Save the updated user and userToAdd objects
     await Promise.all([user.save(), userToAdd.save()]);
 
-    res.status(200).json({ message: 'User added to following list and followers list' });
+    res.status(200).json({ message: 'User added to following list and followers list', followingUser });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal Server Error' });
