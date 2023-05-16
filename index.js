@@ -5,6 +5,7 @@ import cors from 'cors'
 import './config.js'
 import { encryptPassword } from './authMiddleware.js'
 import { validateRegisterData } from './validationMiddleware.js'
+import { faker } from '@faker-js/faker'
 
 const PORT = process.env.PORT || 9999
 const DB_CONNECTION = process.env.DB_CONNECTION
@@ -178,9 +179,10 @@ app.post("/api/v1/new-comment", async (req, res) => {
     // Create comment object
     const commentObject = {
       commentText: commentText,
-      username: user.fullName,
+      commentCreator: user.fullName,
       jobTitle: user.jobTitle,
-      avatar: user.avatarMidsize
+      commentCreatorAvatar: user.avatarMidsize,
+      timestamp: faker.date.between({ from: '2018-01-01T00:00:00.000Z', to: '2023-01-01T00:00:00.000Z' })
     };
 
     // Update the post document
