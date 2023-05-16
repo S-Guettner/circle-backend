@@ -187,9 +187,9 @@ app.post("/api/v1/new-comment", async (req, res) => {
 
     // Post-Dokument aktualisieren
     const result = await userModel.findOneAndUpdate(
-      { _id: postId },
-      { $push: { 'posts.$[p].comments': commentObject } },
-      { arrayFilters: [{ 'postId': postId }] }
+      { postId: postId },
+      { $push: { 'post.comments': commentObject } },
+      done
     );
 
     res.status(200).json({ comment: result });
