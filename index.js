@@ -166,7 +166,8 @@ app.post('/api/v1/search-user', async (req, res) => {
       const isFollowing = user.followingList.some(follower => follower.fullName === fullName);
       return {
         ...user.toObject(),
-        isFollowing
+        isFollowing,
+        userId: userId // Include the ID of the searched user
       };
     });
 
@@ -176,6 +177,7 @@ app.post('/api/v1/search-user', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 //add user to followingList
 app.post('/api/v1/add-following', async (req, res) => {
