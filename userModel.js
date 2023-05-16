@@ -9,7 +9,7 @@ const commentUnderComment = mongoose.Schema({
 
 const commentSchema = mongoose.Schema({
     profileImage: String,
-    userName: String,
+    fullName: String,
     jobTitle: String,
     userId: String,
     commentText: String,
