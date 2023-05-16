@@ -106,30 +106,6 @@ app.post("/api/v1/get-feed", async (req,res) => {
     }
 })
 
-//create comment
-app.post("/api/v1/new-comment", async (req, res) => {
-  try {
-
-    const { userId, userName ,profileImage, jobTitle,  commentText ,postId} = req.body;
-    const comment = {userId, userName ,profileImage, jobTitle,  commentText ,postId}
-    const user = await userModel.findOne({ "posts.postId": postId })
-    if (!user) {
-      return res.status(400).json({ message: "User not found" })
-    }
-    const post = user.posts.find((p) => p.postId.toString() === postId)
-    if (!post) {
-      return res.status(401).json({ message: "Post not found" })
-    }
-    const updateComments = await userModel.findOneAndUpdate(
-      { "posts.postId": postId },
-      { $push: { "posts.$.comments": comment } },
-      { new: true }
-    )
-    res.status(200).json({ comment: updateComments })
-  } catch (err) {
-    res.status(400).json({ message: "Failed to create new comment" })
-  }
-})
 
 //user profile data
 app.post('/api/v1/get-profile' , async (req,res) => {
