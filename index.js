@@ -144,6 +144,51 @@ app.post('/api/v1/following-status', async (req, res) => {
     res.status(500).json({ message: err })
   }
 })
+//add user to following list
+app.post('/api/v1/follow-user', async (req, res) => {
+  try {
+    const { userId, IdOfUserToFollow } = req.body;
+
+    // Find the user with userId
+    const userToFollow = await userModel.findById(userId);
+
+    // Find the user to be followed by IdOfUserToFollow
+    const userToAdd = await userModel.findById(IdOfUserToFollow);
+
+    // Check if the user to follow and the user to add exist
+    if (!userToFollow || !userToAdd) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user is already being followed
+/*     const isFollowing = userToFollow.followingList.some(
+      (follower) => follower.followerName === userToAdd.userName
+    );
+
+    if (isFollowing) {
+      return res.status(400).json({ message: 'User is already being followed' });
+    }
+ */
+    // Create a new follower object containing all data from the userToAdd
+    const followerObject = {
+      followerName: userToAdd.fullName,
+      jobTitle: userToAdd.jobTitle,
+      avatarSmall: userToAdd.avatarSmall,
+      // Add any additional fields from the follower schema
+    };
+
+    // Add the user to the following list array
+    userToFollow.followingList.push(followerObject);
+
+    // Save the updated user
+    await userToFollow.save();
+
+    return res.status(200).json({followerObject});
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 //get comments from specific post
 app.post('/api/v1/get-post-comments', async (req, res) => {
