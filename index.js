@@ -213,10 +213,20 @@ app.post('/api/v1/add-following', async (req, res) => {
     }
 
     // Add the user to the followingList array
-    user.followingList.push({ fullName: fullNameToAdd });
+    const followingUser = {
+      fullName: fullNameToAdd,
+      // Include other user data here
+      // For example: email, username, etc.
+    };
+    user.followingList.push(followingUser);
 
     // Add the user to the followersList array of the user to follow
-    userToAdd.followersList.push({ fullName: user.fullName });
+    const followerUser = {
+      fullName: user.fullName,
+      // Include other user data here
+      // For example: email, username, etc.
+    };
+    userToAdd.followersList.push(followerUser);
 
     // Save the updated user and userToAdd objects
     await Promise.all([user.save(), userToAdd.save()]);
