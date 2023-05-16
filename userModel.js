@@ -32,7 +32,7 @@ const postSchema = mongoose.Schema({
 )
 
 const follower = mongoose.Schema({
-    followerName: String,
+    fullName: String,
     jobTitle: String,
     avatarSmall: String
 })
