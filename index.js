@@ -95,7 +95,7 @@ app.post("/api/v1/get-feed", async (req, res) => {
   try {
     const { userId } = req.body;
     const users = await userModel
-      .find()
+      .find({})
       .populate("posts");
     let posts = users.reduce((acc, user) => acc.concat(user.posts), []);
 
