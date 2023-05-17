@@ -50,12 +50,12 @@ const userSchema = mongoose.Schema({
     gender: String,
     profileDescription: String,
     profileWebsite: String,
-    avatarSmall: String,
+    profileImage: String,
     jobTitle: String,
     posts: [postSchema],
     followerList: [follower],
-    followingList: [follower]
-})
+    followingList: [follower],
+});
 
 // Add the pre middleware to set the fullName field
 follower.pre('save', function (next) {
