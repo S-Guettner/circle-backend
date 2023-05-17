@@ -66,11 +66,9 @@ app.post("/api/v1/login",
   })
 
 //new post
-app.post("/api/v1/new-post/:id", async (req, res) => {
+app.post("/api/v1/new-post", async (req, res) => {
   try {
-
-    const userId = req.params.id;
-    const { profileImage, userName, jobTitle, postImage, likes } = req.body
+    const { userId, profileImage, userName, jobTitle, postImage, likes } = req.body
     const post = { profileImage, userName, jobTitle, postImage, likes }
     const updatedUser = await userModel.findOneAndUpdate(
       { _id: userId },
@@ -327,7 +325,7 @@ app.post('/api/v1/follow-user', async (req, res) => {
   }
 });
 
-//get comments from specific post
+
 app.post('/api/v1/get-post-comments', async (req, res) => {
   try {
     const { postId } = req.body
@@ -337,7 +335,6 @@ app.post('/api/v1/get-post-comments', async (req, res) => {
       return res.status(404).json({ message: 'Post not found.' })
     }
 
-    // get the specific post
     const post = user.posts.find((p) => p.postId === postId);
 
     if (!post) {
@@ -355,7 +352,6 @@ app.post("/api/v1/new-comment", async (req, res) => {
   try {
     const { userId, postId, commentText } = req.body;
 
-    // Retrieve user document
     const user = await userModel.findOne({ _id: userId });
 
     // Create comment object
@@ -392,7 +388,6 @@ app.post('/api/v1/increase-comment-likes', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User or post not found.' });
     }
-
 
     const post = user.posts.find((p) => p.postId === postId);
 
