@@ -36,7 +36,7 @@ app.post('/api/v1/register', validateRegisterData, encryptPassword, async (req, 
       gender,
       profileDescription,
       profileWebsite,
-      profileImage,
+      avatarMidsize,
       jobTitle,
     } = req.body;
     //checks if mail is already in use
