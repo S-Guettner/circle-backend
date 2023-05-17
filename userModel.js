@@ -43,7 +43,6 @@ const userSchema = mongoose.Schema({
     email: String,
     password: String,
     fullName: String,
-    userName: String,
     firstName: String,
     lastName: String,
     birthDate: String,
