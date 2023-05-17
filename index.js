@@ -134,7 +134,7 @@ app.post('/api/v1/get-member-profile', async (req, res) => {
     const { fullName } = req.body
     const singleUser = await userModel.findOne({ fullName: fullName })
     if (!singleUser) {
-      res.status(400).json({ message: "User not Found" })
+      res.status(400).json({ message: "Member not Found" })
     } else {
       res.status(200).json(singleUser)
     }
