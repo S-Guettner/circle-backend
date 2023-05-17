@@ -57,7 +57,7 @@ const userSchema = mongoose.Schema({
 })
 
 // Add the pre middleware to set the fullName field
-userSchema.pre('save', function (next) {
+follower.pre('save', function (next) {
     this.fullName = `${this.firstName} ${this.lastName}`;
     next();
 });

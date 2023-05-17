@@ -90,7 +90,6 @@ app.post("/api/v1/new-post/:id", async (req, res) => {
   }
 })
 
-
 //get posts
 app.post("/api/v1/get-feed", async (req, res) => {
   try {
@@ -101,7 +100,7 @@ app.post("/api/v1/get-feed", async (req, res) => {
     let posts = users.reduce((acc, user) => acc.concat(user.posts), []);
 
     // Sort posts by timestamp in descending order
-    const sortedPosts = posts.sort((a, b) => {
+    const sortedPosts = await posts.sort((a, b) => {
       const timestampA = new Date(a.timestamp);
       const timestampB = new Date(b.timestamp);
       return timestampB - timestampA;
@@ -113,7 +112,6 @@ app.post("/api/v1/get-feed", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
 
 //user profile data
 app.post('/api/v1/get-profile', async (req, res) => {
@@ -220,12 +218,12 @@ app.post('/api/v1/add-following', async (req, res) => {
     // Add the user to the followingList array
     const followingUser = {
       fullName: fullNameToAdd,
-      _id:_id
+      _id: _id
       // For example: email, username, etc.
     };
     user.followingList.push(followingUser);
 
-  
+
     const followerUser = {
       fullName: user.fullName,
       // Include other user data here
