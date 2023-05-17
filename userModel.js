@@ -42,6 +42,7 @@ const userSchema = mongoose.Schema({
     mail: String,
     password: String,
     fullName: String,
+    userName: String,
     firstName: String,
     lastName: String,
     birthDate: String,

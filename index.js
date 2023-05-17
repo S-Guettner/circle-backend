@@ -33,7 +33,7 @@ app.post("/api/v1/register",
       const uniqueMailCheck = await userModel.findOne({ mail })
       if (uniqueMailCheck === null) {
         const user = await userModel.create({ mail, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle })
-        res.status(200).json(user._id)
+        res.status(200).json(user);
       } else {
         res.status(502).json({ message: "email already in use" })
       }
