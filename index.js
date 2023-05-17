@@ -129,6 +129,21 @@ app.post('/api/v1/get-profile', async (req, res) => {
   }
 })
 
+app.post('/api/v1/get-member-profile', async (req, res) => {
+  try {
+    const { fullName } = req.body
+    const singleUser = await userModel.findOne({ fullName: fullName })
+    if (!singleUser) {
+      res.status(400).json({ message: "User not Found" })
+    } else {
+      res.status(200).json(singleUser)
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Failed to get User data" })
+    console.log(err)
+  }
+})
+
 //following status
 app.post('/api/v1/following-status', async (req, res) => {
   try {
@@ -167,7 +182,7 @@ app.post('/api/v1/search-user', async (req, res) => {
       return {
         ...userObject,
         isFollowing,
-        userIds // Include the user IDs of the users in the followingList
+        userIds
       };
     });
 
