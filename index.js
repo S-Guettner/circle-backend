@@ -30,7 +30,7 @@ app.post("/api/v1/register",
     try {
       const { email, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle } = req.body
       //checks if mail is already in use
-      const uniqueMailCheck = await userModel.findOne({ mail })
+      const uniqueMailCheck = await userModel.findOne({ email })
       if (uniqueMailCheck === null) {
         const user = await userModel.create({ email, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle })
         res.status(200).json(user);
