@@ -31,7 +31,8 @@ const postSchema = mongoose.Schema({
         type: Date,
         immutable: true,
         default: Date.now,
-    },
+    }, 
+    
     comments: [commentSchema]
 }
 )
