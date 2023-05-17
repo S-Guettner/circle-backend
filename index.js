@@ -283,7 +283,6 @@ app.post('/api/v1/add-following', async (req, res) => {
   }
 });
 
-//remove user from followinglist
 app.post('/api/v1/remove-following', async (req, res) => {
   const { userId, fullNameToRemove } = req.body;
 
