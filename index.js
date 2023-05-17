@@ -154,30 +154,30 @@ app.post('/api/v1/following-status', async (req, res) => {
 
 //search for user
 app.post('/api/v1/search-user', async (req, res) => {
-  const { fullName, userId } = req.body;
+    const { fullName, userId } = req.body;
 
-  try {
-    const users = await userModel.find(
-      { 'followingList.fullName': { $regex: fullName, $options: 'i' } },
-      'fullName jobTitle avatarSmall followingList'
-    );
+    try {
+        const users = await userModel.find(
+            { 'followingList.fullName': { $regex: fullName, $options: 'i' } },
+            'fullName jobTitle avatarSmall followingList'
+        );
 
-    const searchedUsers = users.map(user => {
-      const isFollowing = user.followingList.some(follower => follower.fullName === fullName);
-      const userObject = user.toObject();
-      const userIds = userObject.followingList.map(follower => follower.userId);
-      return {
-        ...userObject,
-        isFollowing,
-        userIds // Include the user IDs of the users in the followingList
-      };
-    });
+        const searchedUsers = users.map((user) => {
+            const isFollowing = user.followingList.some((follower) => follower.fullName === fullName);
+            const userObject = user.toObject();
+            const userIds = userObject.followingList.map((follower) => follower.userId);
+            return {
+                ...userObject,
+                isFollowing,
+                userIds, // Include the user IDs of the users in the followingList
+            };
+        });
 
-    res.status(200).json(searchedUsers);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+        res.status(200).json(searchedUsers);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 
