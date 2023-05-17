@@ -28,7 +28,7 @@ app.post("/api/v1/register",
   encryptPassword,
   async (req, res) => {
     try {
-      const { email, password } = req.body
+      const { email, password, userName } = req.body
       //checks if mail is already in use
       const uniqueMailCheck = await userModel.findOne({ email })
       if (uniqueMailCheck === null) {
