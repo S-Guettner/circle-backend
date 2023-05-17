@@ -27,7 +27,7 @@ const postSchema = mongoose.Schema({
     postImage: String,
     likes: Number,
     userId: String,
-    
+
 
     comments: [commentSchema],
 });
@@ -40,7 +40,7 @@ const follower = mongoose.Schema({
 })
 
 const userSchema = mongoose.Schema({
-    mail: String,
+    email: String,
     password: String,
     fullName: String,
     userName: String,
