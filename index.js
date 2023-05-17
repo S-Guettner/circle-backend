@@ -28,12 +28,12 @@ app.post("/api/v1/register",
   encryptPassword,
   async (req, res) => {
     try {
-      const { mail, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle } = req.body
+      const { email, password } = req.body
       //checks if mail is already in use
       const uniqueMailCheck = await userModel.findOne({ mail })
       if (uniqueMailCheck === null) {
-        const user = await userModel.create({ mail, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle })
-        res.status(200).json(user);
+        const user = await userModel.create({ email, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle })
+        res.status(200).json(user._id);
       } else {
         res.status(502).json({ message: "email already in use" })
       }
