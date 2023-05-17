@@ -95,8 +95,8 @@ app.post('/api/v1/register-submit', async (req, res) => {
 //login
 app.post('/api/v1/login', encryptPassword, async (req, res) => {
   try {
-    const { mail } = req.body;
-    const user = await userModel.findOne({ mail });
+    const { email } = req.body;
+    const user = await userModel.findOne({ email });
     if (user === null) {
       res.status(401).json({ message: 'User not found' });
     } else {

@@ -50,7 +50,7 @@ const userSchema = mongoose.Schema({
     gender: String,
     profileDescription: String,
     profileWebsite: String,
-    profileImage: String,
+    avatarMidsize: String,
     jobTitle: String,
     posts: [postSchema],
     followerList: [follower],
