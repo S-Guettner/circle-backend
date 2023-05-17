@@ -30,7 +30,7 @@ app.post("/api/v1/register",
     try {
       const { email, password } = req.body
       //checks if mail is already in use
-      const uniqueMailCheck = await userModel.findOne({ mail })
+      const uniqueMailCheck = await userModel.findOne({ email })
       if (uniqueMailCheck === null) {
         const user = await userModel.create({ email, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle })
         res.status(200).json(user._id);
@@ -69,7 +69,7 @@ app.post("/api/v1/login",
 app.post("/api/v1/new-post", async (req, res) => {
   try {
 
-    
+
     const { userId, profileImage, userName, jobTitle, postImage, likes, postDescription } = req.body;
     const post = { profileImage, userName, jobTitle, postImage, likes, postDescription };
     const updatedUser = await userModel.findOneAndUpdate(
