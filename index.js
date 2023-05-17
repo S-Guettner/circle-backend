@@ -70,7 +70,7 @@ app.post('/api/v1/register', validateRegisterData, encryptPassword, async (req, 
 app.post('/api/v1/register-submit', async (req, res) => {
   try {
     const { userId, fullName, firstName, lastName, profileImage, profileDescription, jobTitle, phoneNumber, website } = req.body;
-    const user = await userModel.findOne({ userId: userId }); // Find the user with the specified userId
+    const user = await userModel.findOne({ _id: userId }); // Find the user with the specified userId
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
