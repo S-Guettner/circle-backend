@@ -28,12 +28,12 @@ app.post("/api/v1/register",
   encryptPassword,
   async (req, res) => {
     try {
-      const { email, password, userName } = req.body
+      const { email, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle } = req.body
       //checks if mail is already in use
-      const uniqueMailCheck = await userModel.findOne({ email })
+      const uniqueMailCheck = await userModel.findOne({ mail })
       if (uniqueMailCheck === null) {
         const user = await userModel.create({ email, password, userName, firstName, lastName, birthDate, telephoneNumber, gender, profileDescription, profileWebsite, profileImage, jobTitle })
-        res.status(200).json(user._id);
+        res.status(200).json(user);
       } else {
         res.status(502).json({ message: "email already in use" })
       }
@@ -66,12 +66,12 @@ app.post("/api/v1/login",
   })
 
 //new post
-app.post("/api/v1/new-post", async (req, res) => {
+app.post("/api/v1/new-post/:id", async (req, res) => {
   try {
 
-
-    const { userId, profileImage, userName, jobTitle, postImage, likes, postDescription } = req.body;
-    const post = { profileImage, userName, jobTitle, postImage, likes, postDescription };
+    const userId = req.params.id;
+    const { profileImage, userName, jobTitle, postImage, likes } = req.body
+    const post = { profileImage, userName, jobTitle, postImage, likes }
     const updatedUser = await userModel.findOneAndUpdate(
       { _id: userId },
       { $push: { posts: post } },
@@ -95,7 +95,7 @@ app.post("/api/v1/get-feed", async (req, res) => {
   try {
     const { userId } = req.body;
     const users = await userModel
-      .find()
+      .find({ _id: { $ne: userId } })
       .populate("posts");
     let posts = users.reduce((acc, user) => acc.concat(user.posts), []);
 
