@@ -20,22 +20,17 @@ const commentSchema = mongoose.Schema({
 
 const postSchema = mongoose.Schema({
     postId: String,
-    profileImage: String,
-    fullName: String,
-    jobTitle: String,
+    creatorAvatarSmall: String,
+    postCreator: String,
+    postCreatorJob: String,
     postDescription: String,
     postImage: String,
     likes: Number,
     userId: String,
-    timestamp:{
-        type: Date,
-        immutable: true,
-        default: Date.now,
-    }, 
     
-    comments: [commentSchema]
-}
-)
+
+    comments: [commentSchema],
+});
 
 const follower = mongoose.Schema({
     fullName: String,
