@@ -69,7 +69,7 @@ app.post('/api/v1/register', validateRegisterData, encryptPassword, async (req, 
 //register submit
 app.post('/api/v1/register-submit', async (req, res) => {
   try {
-    const { userId, fullName, firstName, lastName, profileImage, profileDescription, jobTitle, phoneNumber, website } = req.body;
+    const { userId, fullName, firstName, lastName, avatarMidsize, profileDescription, jobTitle, phoneNumber, website } = req.body;
     const user = await userModel.findOne({ _id: userId }); // Find the user with the specified userId
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
@@ -78,7 +78,7 @@ app.post('/api/v1/register-submit', async (req, res) => {
     user.fullName = fullName;
     user.firstName = firstName;
     user.lastName = lastName;
-    user.profileImage = profileImage;
+    user.avatarMidsize = avatarMidsize;
     user.profileDescription = profileDescription;
     user.jobTitle = jobTitle;
     user.phoneNumber = phoneNumber;
