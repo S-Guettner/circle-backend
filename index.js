@@ -53,7 +53,7 @@ app.post('/api/v1/register', validateRegisterData, encryptPassword, async (req, 
         gender,
         profileDescription,
         profileWebsite,
-        profileImage,
+        avatarMidsize,
         jobTitle,
       });
       res.status(200).json(user);
