@@ -101,7 +101,7 @@ app.post('/api/v1/login', encryptPassword, async (req, res) => {
       res.status(401).json({ message: 'User not found' });
     } else {
       if (user.password === req.body.password) {
-        res.status(200).json(user._id);
+        res.status(200).json(user);
       } else {
         res.status(400).json({ message: 'Wrong password' });
       }
