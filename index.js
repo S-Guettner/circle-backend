@@ -114,8 +114,8 @@ app.post('/api/v1/login', encryptPassword, async (req, res) => {
 //new post
 app.post('/api/v1/new-post', async (req, res) => {
   try {
-    const { userId, profileImage, userName, jobTitle, postImage, likes } = req.body;
-    const post = { profileImage, userName, jobTitle, postImage, likes };
+    const { userId, profileImage, userName, jobTitle, postImage, likes, postCaption } = req.body;
+    const post = { profileImage, userName, jobTitle, postImage, likes, postCaption };
     const updatedUser = await userModel.findOneAndUpdate({ _id: userId }, { $push: { posts: post } }, { new: true });
 
     // Check if user was found and updated
