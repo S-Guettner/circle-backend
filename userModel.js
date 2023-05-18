@@ -27,7 +27,11 @@ const postSchema = mongoose.Schema({
     postImage: String,
     likes: Number,
     userId: String,
-
+    timestamp: {
+        type: Date,
+        immutable: true,
+        default: Date.now,
+    },
 
     comments: [commentSchema],
 });
